@@ -41,6 +41,7 @@ fi
 if [ ! -x "$(command -v npm)" ]; then
   curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
   sudo apt-get install -y nodejs
+  sudo npm install -g typescript
 fi
 
 if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
@@ -49,7 +50,7 @@ if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
   if [ -d "$HOME/.vim/bundle/YouCompleteMe" ]; then
     sudo apt-get install build-essential cmake
     cd ~/.vim/bundle/YouCompleteMe
-    ./install.py --clang-completer --
+    ./install.py --clang-completer --js-completer
   fi
 fi
 
