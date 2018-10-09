@@ -1,6 +1,9 @@
 #!/bin/bash
 mkdir -p ~/.vim
-sudo apt-get install git
+
+if [ ! -x "$(command -v git)" ]; then
+  sudo apt-get install git
+fi
 
 mkdir -p ~/Projects
 
@@ -30,6 +33,7 @@ if [ ! -d "$HOME/Projects/vim" ]; then
 
   make
   sudo make install
+  cd
 fi
 
 
@@ -48,10 +52,31 @@ if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
   vim +PluginInstall +qall
   if [ -d "$HOME/.vim/bundle/YouCompleteMe" ]; then
-    sudo apt-get install build-essential cmake
+    sudo apt-get install -y build-essential cmake
     cd ~/.vim/bundle/YouCompleteMe
     ./install.py --clang-completer --js-completer
+    cd
   fi
 fi
 
-cd
+if [ ! -x "$(command -v docker)" ]; then
+  sudo apt-get remove docker docker-engine docker.io
+  sudo apt-get install \
+     apt-transport-https \
+     ca-certificates \
+     curl \
+     gnupg2 \
+     software-properties-common
+
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+
+  sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) \
+   stable"
+
+  sudo apt-get update
+  sudo apt-get install -y docker-ce
+  sudo usermod -aG docker $USER
+  docker run hello-world
+fi
