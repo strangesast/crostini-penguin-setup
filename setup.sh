@@ -2,7 +2,7 @@
 mkdir -p ~/.vim
 
 if [ ! -x "$(command -v git)" ]; then
-  sudo apt-get install git
+  sudo apt-get -y install git
 fi
 
 mkdir -p ~/Projects
@@ -60,8 +60,8 @@ if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
 fi
 
 if [ ! -x "$(command -v docker)" ]; then
-  sudo apt-get remove docker docker-engine docker.io
-  sudo apt-get install \
+  sudo apt-get remove -y docker docker-engine docker.io
+  sudo apt-get install -y \
      apt-transport-https \
      ca-certificates \
      curl \
@@ -79,4 +79,12 @@ if [ ! -x "$(command -v docker)" ]; then
   sudo apt-get install -y docker-ce
   sudo usermod -aG docker $USER
   docker run hello-world
+fi
+
+if [ ! -x "$(command -v java)" ]; then
+  sudo apt-get install -y default-jre
+fi
+
+if [ ! -x "$(command -v javac)" ]; then
+  sudo apt-get install -y default-jdk
 fi
