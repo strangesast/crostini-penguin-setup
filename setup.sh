@@ -5,9 +5,12 @@ if [ ! -x "$(command -v git)" ]; then
   sudo apt-get -y install git
 fi
 
-mkdir -p ~/Projects
+mkdir -p ~/src/github.com/strangesast
+if [ ! -L "$HOME/Projects" ]; then
+  ln -s ~/src/github.com/strangesast ~/Projects
+fi
 
-if [ ! -d "$HOME/Projects/vim" ]; then
+if [ ! -d "$HOME/src/github.com/vim/vim" ]; then
   sudo apt-get install -y libncurses5-dev libgnome2-dev libgnomeui-dev \
     libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
     libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev \
@@ -16,8 +19,9 @@ if [ ! -d "$HOME/Projects/vim" ]; then
   sudo apt-get remove -y vim vim-tiny vim-common vim-gui-common vim-nox
   sudo apt-get autoremove -y
   
-  git clone https://github.com/vim/vim.git ~/Projects/vim --depth=1
-  cd ~/Projects/vim
+  mkdir -p ~/src/github.com/vim
+  git clone https://github.com/vim/vim.git ~/src/github.com/vim/vim --depth=1
+  cd ~/src/github.com/vim/vim
   ./configure --with-features=huge \
     --enable-multibyte \
     --enable-rubyinterp=yes \
@@ -35,7 +39,6 @@ if [ ! -d "$HOME/Projects/vim" ]; then
   sudo make install
   cd
 fi
-
 
 if [ ! -d "$HOME/Projects/dotfiles" ]; then
   git clone https://github.com/strangesast/dotfiles.git Projects/dotfiles
