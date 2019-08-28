@@ -22,7 +22,7 @@ if [ ! -x "$(command -v go)" ]; then
   then
     wget https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz -P /tmp
     sudo tar -C /usr/local -xzf /tmp/go1.12.9.linux-amd64.tar.gz
-    echo "export PATH=$PATH:/usr/local/go/bin" | sudo tee -a /etc/profile
+    echo "export PATH=\$PATH:/usr/local/go/bin" | sudo tee -a /etc/profile
   fi
 fi
 
@@ -33,10 +33,25 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   {
-    sudo apt-get install -y libncurses5-dev libgnome2-dev libgnomeui-dev \
-      libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
-      libcairo2-dev libx11-dev libxpm-dev libxt-dev python-dev \
-      python3-dev ruby-dev lua5.1 liblua5.1-dev libperl-dev
+    sudo apt-get install -y \
+      build-essential \
+      cmake \
+      libncurses5-dev \
+      libgnome2-dev \
+      libgnomeui-dev \
+      libgtk2.0-dev \
+      libatk1.0-dev \
+      libbonoboui2-dev \
+      libcairo2-dev \
+      libx11-dev \
+      libxpm-dev \
+      libxt-dev \
+      python-dev \
+      python3-dev \
+      ruby-dev \
+      lua5.1 \
+      liblua5.1-dev \
+      libperl-dev
 
     sudo apt-get remove -y vim vim-tiny vim-common vim-gui-common vim-nox
     sudo apt-get autoremove -y
@@ -88,17 +103,6 @@ if [ ! -x "$(command -v npm)" ]; then
   }
 fi
 
-if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
-  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  vim +PluginInstall +qall
-  if [ -d "$HOME/.vim/bundle/YouCompleteMe" ]; then
-    sudo apt-get install -y build-essential cmake
-    cd ~/.vim/bundle/YouCompleteMe
-    ./install.py --clang-completer --js-completer
-    cd
-  fi
-fi
-
 read -p "Install docker? " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -139,3 +143,16 @@ then
     echo `java install failed`
   }
 fi
+
+if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
+  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  vim +PluginInstall +qall
+  if [ -d "$HOME/.vim/bundle/YouCompleteMe" ]; then
+    sudo apt-get install -y build-essential cmake
+    cd ~/.vim/bundle/YouCompleteMe
+    python3 install.py --clang-completer --ts-completer --java-completer --go-completer
+    cd
+  fi
+fi
+
+
