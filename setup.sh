@@ -3,15 +3,35 @@ mkdir -p ~/.vim
 
 if [ ! -x "$(command -v git)" ]; then
   sudo apt-get -y install git
+  git config --global user.email "strangesast@gmail.com"
+  git config --global user.name "Sam Zagrobelny"
 fi
 
-mkdir -p ~/src/github.com/strangesast
-
-if [ ! -L "$HOME/Projects" ]; then
-  ln -s ~/src/github.com/strangesast ~/Projects
+read -p "Install typical apt stuff? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  sudo apt-get install -y tree \
+    silversearcher-ag
 fi
 
-if [ ! -d "$HOME/src/github.com/vim/vim" ]; then
+if [ ! -x "$(command -v go)" ]; then
+  read -p "Install go? " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    wget https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz -P /tmp
+    sudo tar -C /usr/local -xzf /tmp/go1.12.9.linux-amd64.tar.gz
+    echo "export PATH=$PATH:/usr/local/go/bin" | sudo tee -a /etc/profile
+  fi
+fi
+
+mkdir -p ~/Projects
+
+read -p "Install vim? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
   {
     sudo apt-get install -y libncurses5-dev libgnome2-dev libgnomeui-dev \
       libgtk2.0-dev libatk1.0-dev libbonoboui2-dev \
@@ -22,8 +42,9 @@ if [ ! -d "$HOME/src/github.com/vim/vim" ]; then
     sudo apt-get autoremove -y
     
     mkdir -p ~/src/github.com/vim
-    git clone https://github.com/vim/vim.git ~/src/github.com/vim/vim --depth=1
-    cd ~/src/github.com/vim/vim
+    git clone https://github.com/vim/vim.git /tmp/vim --depth=1
+    cd /tmp/vim
+    git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) 
     ./configure --with-features=huge \
       --enable-multibyte \
       --enable-rubyinterp=yes \
@@ -47,8 +68,8 @@ fi
 
 if [ ! -d "$HOME/Projects/dotfiles" ]; then
   {
-    cd ~/src/github.com/strangesast
-    git clone https://github.com/strangesast/dotfiles.git dotfiles
+    cd ~/Projects
+    git clone https://github.com/strangesast/dotfiles.git
     cd dotfiles
     ln -s vimrc ~/.vimrc
   } || {
@@ -58,8 +79,9 @@ fi
 
 if [ ! -x "$(command -v npm)" ]; then
   {
-    curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     sudo apt-get install -y nodejs
+    sudo npm install -g npm
     sudo npm install -g typescript
   } || {
     echo `nodejs install failed`
@@ -77,7 +99,10 @@ if [ ! -d "$HOME/.vim/bundle/Vundle.vim" ]; then
   fi
 fi
 
-if [ ! -x "$(command -v docker)" ]; then
+read -p "Install docker? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
   {
     sudo apt-get remove -y docker docker-engine docker.io
     sudo apt-get install -y \
@@ -103,7 +128,10 @@ if [ ! -x "$(command -v docker)" ]; then
   }
 fi
 
-if [ ! -x "$(command -v java)" ]; then
+read -p "Install java? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
   {
     sudo apt-get install -y default-jre
     sudo apt-get install -y default-jdk
