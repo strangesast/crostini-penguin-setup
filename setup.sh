@@ -15,6 +15,13 @@ then
     silversearcher-ag
 fi
 
+if [ ! -x "$(command -v python3.8)" ]; then
+  sudo apt-get install -y libssl-dev libsqlite3-dev
+  sudo wget https://github.com/python/cpython/archive/v3.8.0rc1.tar.gz -P /tmp
+  sudo tar -xzf /tmp/v3.8.0.tar.gz
+  cd /tmp/cpython-3.8.0rc1/ && ./configure --enable-optimizations && make && sudo make altinstall
+fi
+
 if [ ! -x "$(command -v go)" ]; then
   read -p "Install go? " -n 1 -r
   echo
